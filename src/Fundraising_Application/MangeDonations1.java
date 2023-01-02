@@ -149,7 +149,136 @@ public class MangeDonations1 extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
         
+        String z = CustomerState.get(CustomerState.size() - 1).CurrentCustomerState;
+        String y[] = z.split(" ");
+        
+        System.out.println(z);
+        System.out.println(y[0]);
+        System.out.println(y[1]);
+        
+        
+        try
+        {
+        
+        FileInputStream file = new FileInputStream("src\\DataBase\\Cutomers.dat");
+        ObjectInputStream inputFile = new ObjectInputStream(file);
+        boolean endOfFile = false;
+        
+        while (!endOfFile){
+            
+            try 
+            {
+              Customers.add((RegisteredDoner) inputFile.readObject());
+                
+            }
+            catch (EOFException e)
+            {
+                endOfFile = true;
+            }
+            catch (Exception f)
+            {
+           //  JOptionPane.showMessageDialog(null, f.getMessage());
+            }
+        }
+        
+        inputFile.close();
+        }
+        
+        catch (IOException e){
+            
+         //   JOptionPane.showMessageDialog(null, e.getMessage());
+            
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        if(jTextField1.getText().isEmpty() ){
+            
+                         JOptionPane.showMessageDialog(null, "One of the Required fields is empty please fill it");
+
+ }else{
+            
+           
+      
+   boolean abort = false;    
+   
+   boolean Match = false;
+           
+           
+   for (int i=0;i<Customers.size() && !abort ;i++) {
+           
+          
+     
+      if (Customers.get(i).getName().trim().equals(y[0])  && Customers.get(i).getPassword().equals(y[1])){
+              
+          
+          
+          if (Customers.get(i).Balance >= Integer.parseInt (jTextField1.getText())){
+                    
+                    
+                    
+              
+                     
+                     Customers.get(i).Balance -= Integer.parseInt (jTextField1.getText());
+                     
+                     
+                     jTextArea1.append(" ######## INVOICE ####### " + "\n");
+                     jTextArea1.append(" National Bank Of Egypt " + "\n");
+                     jTextArea1.append(" You have Withdrawn " + jTextField1.getText() + "\n" );
+                     jTextArea1.append(" From your account Number " + "\n" );
+                     jTextArea1.append( " " + Customers.get(i).getAccountNumber() + "\n" );
+                     int currentBalanceAfterWithdrawal = Customers.get(i).Balance;
+                     jTextArea1.append(" You current Blance is " + String.valueOf(currentBalanceAfterWithdrawal) + "\n");
+                     jTextArea1.append(" If you faced any problem, " + "\n");
+                     jTextArea1.append(" please call our customer service, " + "\n"); 
+                     jTextArea1.append(" PHONE NUMBER : 01025369874 " + "\n");
+                     jTextArea1.append(" Thank you for choosing us " + "\n");
+                     jTextArea1.append( "\n");
+                     
+                     
+                     saveCustomersToFile();
+                     
+                     
+                     
+           }else if(Customers.get(i).Balance < Integer.parseInt (jTextField1.getText())){
+               
+               
+                    System.out.println(Customers.get(i).Balance);
+                    System.out.println(Customers.get(i).Username);
+                    
+                    JOptionPane.showMessageDialog(null, "There is no suffcient funds in your account");
+                    
+                    abort = true;
+                    break;
+                    
+                }
+      
+            }
+      
+      
+   
+          }
+                     
+                
+      }
+   
+     
+   
+   
     
+        
+        
+        
+        
+        
+        
+  
+        
 
     }//GEN-LAST:event_jButton1ActionPerformed
 

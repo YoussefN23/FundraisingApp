@@ -11,13 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -25,18 +20,16 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Donate_Via_Bank_Transfer extends javax.swing.JFrame {
     
-     ArrayList <VolunteerState> Vstate;
+    ArrayList <VolunteerState> CustomerState;
      ArrayList <RegisteredDoner> Customers;
-     ArrayList <CustomerState> CustomerState;
 
     /**
      * Creates new form Withdraw
      */
     public Donate_Via_Bank_Transfer() {
         initComponents();
-        Vstate = new ArrayList<VolunteerState>();
+        CustomerState = new ArrayList<VolunteerState>();
         Customers = new ArrayList<RegisteredDoner>();
-        CustomerState = new ArrayList<CustomerState>();
         RetriveCustomerState();
     }
     
@@ -84,7 +77,7 @@ public class Donate_Via_Bank_Transfer extends javax.swing.JFrame {
             
             try 
             {
-              CustomerState.add((CustomerState) inputFile.readObject());
+              CustomerState.add((VolunteerState) inputFile.readObject());
                 
             }
             catch (EOFException e)
@@ -184,76 +177,150 @@ public class Donate_Via_Bank_Transfer extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-                    String z = CustomerState.get(0).CurrentCustomerState;
-                    String y[] = z.split(" ");
-                    String UserName = y[0];
-                    String PassWord = y[1];
-                    
-                    
-                    try {
+        
+        
+        String z = CustomerState.get(CustomerState.size() - 1).CurrentCustomerState;
+        String y[] = z.split(" ");
+        
+        System.out.println(z);
+        System.out.println(y[0]);
+        System.out.println(y[1]);
+        
+        
+        try
+        {
+        
+        FileInputStream file = new FileInputStream("src\\DataBase\\Cutomers.dat");
+        ObjectInputStream inputFile = new ObjectInputStream(file);
+        boolean endOfFile = false;
+        
+        while (!endOfFile){
             
-                        Class.forName("com.mysql.jdbc.Driver");
-                        Connection connection = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/registered_doner","root", "1234567890");
-            
-            
-            
-                        PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select * from registered_doner where Username=? and Password=?");
-                        st.setString(1, UserName);
-                        st.setString(2, PassWord);
-                        ResultSet rs = st.executeQuery();
-            
-            
-            
-                    if (rs.next()){
+            try 
+            {
+              Customers.add((RegisteredDoner) inputFile.readObject());
                 
-                        String id = String.valueOf(rs.getInt("ID"));
-                        String username = rs.getString("Username");
-                        String Password = rs.getString("Password");
-                        String Email = rs.getString("Email");
-                        String Phone_number = rs.getString("Phone_number");
-                        String Address = rs.getString("Address");
-                        String Credit_Card_Number = rs.getString("Credit_Card_Number");
-                        String Bank_Account_Number = rs.getString("Bank_Account_Number");
-                        
-                        jTextArea1.append(" ######## INVOICE ####### " + "\n");
-                        jTextArea1.append(" Thank you for your donation Mr." + username + "\n");
-                        jTextArea1.append(" We sent you a confirmation letter for your Donation " + "\n");
-                        jTextArea1.append(" On your email address " + Email + "\n");
-                        jTextArea1.append(" SMS confirmation was sent to " + Phone_number + "\n");
-                        jTextArea1.append(" National Bank Of Egypt " + "\n");
-                        jTextArea1.append(" You have Deposited " + jTextField2.getText() + "\n" );
-                        jTextArea1.append(" From your account Number " + "\n" );
-                        jTextArea1.append( " " + acctextfield.getText() + "\n" );
-                        jTextArea1.append(" If you faced any problem, " + "\n");
-                        jTextArea1.append(" please call our customer service, " + "\n"); 
-                        jTextArea1.append(" PHONE NUMBER : 01025369874 " + "\n");
-                        jTextArea1.append(" Thank you for Donating to us " + "\n");
-                        jTextArea1.append( "\n");
-                     
-                        
-                        }
-                    }
-                    catch (Exception e){
+            }
+            catch (EOFException e)
+            {
+                endOfFile = true;
+            }
+            catch (Exception f)
+            {
+            // JOptionPane.showMessageDialog(null, f.getMessage());
+            }
+        }
+        
+        inputFile.close();
+        }
+        
+        catch (IOException e){
             
-                     System.out.println(e.getMessage());
+          //  JOptionPane.showMessageDialog(null, e.getMessage());
             
-                    }
-                    
-                    
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        if(acctextfield.getText().isEmpty() ){
+            
+                         JOptionPane.showMessageDialog(null, "One of the Required fields is empty please fill it");
+
+ }else{
+            
+           
       
-                    
-                    
-                    
-                     
-                     
-                   
-                     
-                     
-                    
-                     
-       
+   boolean abort = false;    
    
+   boolean Match = false;
+           
+           
+   for (int i=0;i<Customers.size() && !abort ;i++) {
+           
+          
+     
+      if (Customers.get(i).getName().trim().equals(y[0])  && Customers.get(i).getPassword().equals(y[1])){
+              
+          
+          
+          if (Customers.get(i).Balance >= Integer.parseInt (jTextField2.getText())){
+                    
+                   
+                     boolean abort2 = false;    
+   
+                     boolean Match2 = false;
+           
+           
+                     for (int j=0;j<Customers.size() && !abort2 ;i++) {
+                         
+                         System.out.println(Customers.get(j).AccountNumber);
+              
+                            if (Customers.get(j).AccountNumber.equals(acctextfield.getText())){
+              
+                     
+                                Customers.get(i).Balance -= Integer.parseInt (jTextField2.getText());
+                                Customers.get(j).Balance += Integer.parseInt (jTextField2.getText());
+                     
+                     
+                                jTextArea1.append(" ######## INVOICE ####### " + "\n");
+                                jTextArea1.append(" National Bank Of Egypt " + "\n");
+                                jTextArea1.append(" You have Transfered " + jTextField2.getText() + "\n" );
+                                jTextArea1.append(" From your account Number " + "\n" );
+                                jTextArea1.append( " " + Customers.get(i).getAccountNumber() + "\n" );
+                                jTextArea1.append(" to account Number " + "\n" );
+                                jTextArea1.append( " " + Customers.get(j).getAccountNumber() + "\n" );
+                                int currentBalanceAfterWithdrawal = Customers.get(i).Balance;
+                                jTextArea1.append(" You current Blance is " + String.valueOf(currentBalanceAfterWithdrawal) + "\n");
+                                jTextArea1.append(" If you faced any problem, " + "\n");
+                                jTextArea1.append(" please call our customer service, " + "\n"); 
+                                jTextArea1.append(" PHONE NUMBER : 01025369874 " + "\n");
+                                jTextArea1.append(" Thank you for choosing us " + "\n");
+                                jTextArea1.append( "\n");
+                     
+                     
+                                saveCustomersToFile();
+                     
+                            } else {
+                                
+                                JOptionPane.showMessageDialog(null, "no such account exits in our database, please make sure you typed the correct acc number");
+                                
+                            }
+                            
+                     }
+                     
+           }else if(Customers.get(i).Balance < Integer.parseInt (jTextField2.getText())){
+               
+               
+                    System.out.println(Customers.get(i).Balance);
+                    System.out.println(Customers.get(i).Username);
+                    
+                    JOptionPane.showMessageDialog(null, "There is no suffcient funds in your account");
+                    
+                    abort = true;
+                    break;
+                    
+                }
+      
+            }
+      
+      
+   
+          }
+                     
+                
+      }
+   
+     
+   
+   
+    
+        
+        
         
         
         

@@ -21,7 +21,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Vector;
 
 /**
@@ -50,14 +49,16 @@ public class Login_Interface extends javax.swing.JFrame  {
      
  ArrayList <VolunteerApplications> Applications;
  ArrayList <RegisteredDoner> Customers;
- ArrayList <CustomerState> CustomerState;
+ ArrayList <VolunteerState> CustomerState;
  
     public Login_Interface() {
         initComponents();
-        
-        
-        Customers = new ArrayList<RegisteredDoner>();
-        CustomerState = new ArrayList<CustomerState>();
+         Customers = new ArrayList<RegisteredDoner>();
+          Applications = new ArrayList<VolunteerApplications>();
+          CustomerState = new ArrayList<VolunteerState>();
+          
+          
+         
 
     }
     
@@ -65,7 +66,7 @@ public class Login_Interface extends javax.swing.JFrame  {
     
     
     
-   public void saveCustomerStateToFile(){
+    public void saveCustomerStateToFile(){
          
             try 
             {
@@ -112,7 +113,6 @@ public class Login_Interface extends javax.swing.JFrame  {
         
     }
 
-
     
  
 
@@ -132,6 +132,7 @@ public class Login_Interface extends javax.swing.JFrame  {
         MainPassword = new javax.swing.JPasswordField();
         un = new javax.swing.JLabel();
         pw = new javax.swing.JLabel();
+        Admin = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         un1 = new javax.swing.JLabel();
@@ -164,13 +165,7 @@ public class Login_Interface extends javax.swing.JFrame  {
             }
         });
         getContentPane().add(login);
-        login.setBounds(220, 250, 110, 30);
-
-        MainUserName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MainUserNameActionPerformed(evt);
-            }
-        });
+        login.setBounds(130, 250, 140, 30);
         getContentPane().add(MainUserName);
         MainUserName.setBounds(120, 180, 360, 20);
 
@@ -192,6 +187,15 @@ public class Login_Interface extends javax.swing.JFrame  {
         pw.setText("Password:");
         getContentPane().add(pw);
         pw.setBounds(30, 210, 60, 20);
+
+        Admin.setText("Administrator");
+        Admin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AdminActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Admin);
+        Admin.setBounds(280, 250, 130, 30);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -220,7 +224,7 @@ public class Login_Interface extends javax.swing.JFrame  {
         getContentPane().add(un1);
         un1.setBounds(30, 180, 70, 20);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin", "Registered Doner" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin", "Registered Doner", "Volunteer" }));
         getContentPane().add(jComboBox1);
         jComboBox1.setBounds(120, 150, 360, 22);
 
@@ -234,61 +238,179 @@ public class Login_Interface extends javax.swing.JFrame  {
     }//GEN-LAST:event_ApplyActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-   
-         String uusername = MainUserName.getText();
-         String ppassword  = MainPassword.getText();
-         
-    if(jComboBox1.getSelectedItem().equals("Registered Doner")){
         
-           
+     try
+        {
+        
+        FileInputStream file = new FileInputStream("src\\DataBase\\Cutomers.dat");
+        ObjectInputStream inputFile = new ObjectInputStream(file);
+        boolean endOfFile = false;
+        
+        while (!endOfFile){
             
-        try {
-            
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection connection = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/registered_doner","root", "1234567890");
-            
-            
-            
-            PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select Username, Password from registered_doner where Username=? and Password=?");
-            st.setString(1, uusername);
-            st.setString(2, ppassword);
-            ResultSet rs = st.executeQuery();
-            
-            if (rs.next()){
+            try 
+            {
+              Customers.add((RegisteredDoner) inputFile.readObject());
                 
-                CustomerState currentCustomerState = new CustomerState(MainUserName.getText().trim() + " " + MainPassword.getText()); // state is a combination of pass and username
-                CustomerState.add(0, currentCustomerState);
-                saveCustomerStateToFile();
-                dispose();
-                new User_Interface().setVisible(true);
-                     
+            }
+            catch (EOFException e)
+            {
+                endOfFile = true;
+            }
+            catch (Exception f)
+            {
+             //JOptionPane.showMessageDialog(null, f.getMessage());
             }
         }
-        catch (Exception e){
+        
+        inputFile.close();
+        }
+        
+        catch (IOException e){
             
-            System.out.println(e.getMessage());
+            //JOptionPane.showMessageDialog(null, e.getMessage());
             
         }
-    } else if (jComboBox1.getSelectedItem().equals("Admin")){
         
-        if (MainUserName.getText().trim().equals("Admin")  && MainPassword.getText().equals("Admin") ){
+        
+        
+         try{
+        
+       
+       FileInputStream file = new FileInputStream("src\\DataBase\\Applications.dat");
+        ObjectInputStream inputFile = new ObjectInputStream(file);
+        boolean endOfFile = false;
+        
+        while (!endOfFile){
+            
+            try 
+            {
+           Applications.add ((VolunteerApplications) inputFile.readObject());
+                
+            }
+            catch (EOFException e)
+            {
+                endOfFile = true;
+            }
+            catch (Exception f)
+            {
+            // JOptionPane.showMessageDialog(null, f.getMessage());
+            }
+        }
+        
+        inputFile.close();
+        }
+        catch (IOException e){
+            
+           // JOptionPane.showMessageDialog(null, e.getMessage());
+            
+        }
+             
+             
+        
+        
+        
+        
+  if(MainUserName.getText().isEmpty() ||MainPassword.getText().isEmpty() ){
+            
+                         JOptionPane.showMessageDialog(null, "One of the Required fields is empty please fill it");
+
+ }else{
+            
+           
+      
+   boolean abort = false;    
+   
+   boolean Match = false;
+           
+           
+   for (int i=0;i<Customers.size() && !abort ;i++) {
+           
+          
+     
+      if (MainUserName.getText().trim().equals(Customers.get(i).getName().trim())  && MainPassword.getText().equals(Customers.get(i).getPassword()) ){
+              
+          String x = Integer.toString(Customers.get(i).ApplicationNumber);
+          
+          for (int j=0; j<Applications.size(); j++){
+             
+         
+                if(x.equals(Applications.get(j).ApplicationNumber) && Applications.get(j).Applicationstatus.equals("Approved")) {
+                    
+                    
+                    
+                    
+                    VolunteerState currentCustomerState = new VolunteerState(MainUserName.getText().trim() + " " + MainPassword.getText()); // state is a combination of pass and username
+        
+        
+        
+        
+        
+                    CustomerState.add(0, currentCustomerState);
+                            
+                            
+       
+                    saveCustomerStateToFile();
+                    
+                    
+                    
+                    
+                     Match = true;
+                     new User_Interface().setVisible(true);
+                     dispose();
+                     abort = true;
+                     break;
+                     
+                     
+                     
+                     
+                     
+                     
+                      
+                }else if(x.equals(Applications.get(j).ApplicationNumber) && Applications.get(j).Applicationstatus.equals("DisApproved")){
+                    
+                    JOptionPane.showMessageDialog(null, "Unfortunaely your application has been denied");
+                    
+                    abort = true;
+                    break;
+                    
+                } 
+          }
+                     
+                
+      }
+   
+     }
+   
+   
+    if (Match == false) {
+                      
+        
+        JOptionPane.showMessageDialog(null, "Failed login attempt, make sure you are inserting the proper credintials");
+                       
+                     }
+        
+        
+        
+        
+        
+        
+  }
+       
+    }//GEN-LAST:event_loginActionPerformed
+
+    private void AdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdminActionPerformed
+
+         if (MainUserName.getText().trim().equals("Admin")  && MainPassword.getText().equals("Admin") ){
             
              
-            new EmployeeInterface().setVisible(true);
-            dispose();
+         new EmployeeInterface().setVisible(true);
+         dispose();
          
          }else {
                JOptionPane.showMessageDialog(null, "Failed login attempt, make sure you are inserting the proper credintials");
          }
-        
-    }
-   
-       
-    }//GEN-LAST:event_loginActionPerformed
-
-    private void MainUserNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MainUserNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_MainUserNameActionPerformed
+    }//GEN-LAST:event_AdminActionPerformed
 
     /**
      * @param args the command line arguments
@@ -326,10 +448,11 @@ public class Login_Interface extends javax.swing.JFrame  {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Admin;
     private javax.swing.JButton Apply;
     private javax.swing.JLabel Looking;
-    public javax.swing.JPasswordField MainPassword;
-    public javax.swing.JTextField MainUserName;
+    private javax.swing.JPasswordField MainPassword;
+    private javax.swing.JTextField MainUserName;
     private javax.swing.JSeparator Separator;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JComboBox<String> jComboBox1;

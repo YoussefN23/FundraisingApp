@@ -7,13 +7,8 @@ package Fundraising_Application;
 import java.awt.Desktop;  
 import java.io.*;
 import java.io.FileWriter;  
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author flossycat
@@ -178,20 +173,20 @@ public class ManageRequests extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "ID", "Name", "Major", "Level", "Email", "PhoneNumber", "Address"
+                "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -200,7 +195,7 @@ public class ManageRequests extends javax.swing.JFrame {
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Fundraising_Application/template2.png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("D:\\version 1 sprint 1\\Fundraisng_Application_sprint_2\\src\\template2.png")); // NOI18N
         jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 190, 170));
 
@@ -227,42 +222,6 @@ catch(Exception e)
 {  
 e.printStackTrace();  
 }  
-        
-        
-         try {
-            
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection connection = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/volunteer","root", "1234567890");
-            
-            
-            
-            PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select * from volunteer");
-            
-            ResultSet rs = st.executeQuery();
-            
-            
-            
-            while (rs.next()){
-                
-                String ID = String.valueOf(rs.getInt("ID"));
-                String Name = rs.getString("Name");
-                String Major = rs.getString("Major");
-                String Level = rs.getString("Level");
-                String Email = rs.getString("Email");
-                String PhoneNumber = rs.getString("PhoneNumber");
-                String Address = rs.getString("Address");
-                //String Bank_Account_Number = rs.getString("Documentation");
-                     
-                String tbData[] = {ID, Name, Major, Level, Email, PhoneNumber, Address};
-                DefaultTableModel RecordTable = (DefaultTableModel)jTable1.getModel();
-                RecordTable.addRow(tbData);
-            }
-        }
-        catch (Exception e){
-            
-            System.out.println(e.getMessage());
-            
-        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

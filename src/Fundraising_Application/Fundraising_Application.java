@@ -41,12 +41,12 @@ class User implements Serializable {
     }   
 
 }
-////////////////////////////////////////////////////////////////////////////
+
 
 class RegisteredDoner extends User {
     
   
-    
+    int ApplicationNumber;  // not in database 
     
    
     String Adress;
@@ -54,9 +54,9 @@ class RegisteredDoner extends User {
     String CreditCard;
            
             
-     RegisteredDoner( String B, String C, String D, String E,String F, String G,String H){
+     RegisteredDoner(int A, String B, String C, String D, String E,String F, String G,String H){
         
-       
+        this.ApplicationNumber = A;
         this.Username = B;
         this.Password = C;
         this.Email = D;
@@ -69,7 +69,9 @@ class RegisteredDoner extends User {
         
     } 
 
-    
+    public int getApplicationNumber() {
+        return ApplicationNumber;
+    }
      
     public String getName() {
         return Username;
@@ -186,23 +188,22 @@ class Volunteer extends User {
     int ApplicationNumber;
     
     String name;
-    
+    String YearLevel;
+    String MajorDepartment;
     String Address;
-    
+    String NationalID;
     String Major;
-
-    int Level;
-    
+    int Level; 
     String Documentation;    
             
-    public Volunteer(int A, String B, String C, int D, String E, String F, String G, String H){
+     Volunteer(int A, String B, String C, int D, String E, String F,String G,String H){
         
         this.ApplicationNumber = A;
-        //this.Username = null;
+        this.Username = null;
         this.name = B;
         this.Major = C;
         this.Level = D;
-        //this.Password = null;
+        this.Password = null;
         this.Email = E;
         this.phoneNumber =F;
         this.Address = G;
@@ -243,31 +244,6 @@ class Volunteer extends User {
     public String[][] getArrayofUsersAccounts() {
         return arrayofUsersAccounts;
     }
-    
-    
-    public String getMajor() {
-        return Major;
-    }
-
-    public void setMajor(String Major) {
-        this.Major = Major;
-    }
-
-    public int getLevel() {
-        return Level;
-    }
-
-    public void setLevel(int Level) {
-        this.Level = Level;
-    }
-
-    public String getDocumentation() {
-        return Documentation;
-    }
-
-    public void setDocumentation(String Documentation) {
-        this.Documentation = Documentation;
-    }
 
     
 }
@@ -289,24 +265,10 @@ class VolunteerState implements Serializable{
     
 }
 
-class CustomerState implements Serializable{
-    
-    String CurrentCustomerState;
-    
-    
-    
-    CustomerState(String CustomerUserName){
-        
-        this.CurrentCustomerState = CustomerUserName;
-        
-    }
-    
-}
-
 class VolunteerApplications implements Serializable{
     
-     String ApplicationNumber;
-     String Applicationstatus;
+    private String ApplicationNumber;
+    private String Applicationstatus;
     
     
     VolunteerApplications(String A, String B){

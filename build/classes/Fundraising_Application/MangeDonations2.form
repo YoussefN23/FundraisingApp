@@ -59,7 +59,7 @@
                 <LineBorder/>
               </Border>
             </Property>
-            <Property name="label" type="java.lang.String" value="FAQ"/>
+            <Property name="label" type="java.lang.String" value="About"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton5ActionPerformed"/>
@@ -77,7 +77,7 @@
                 <LineBorder/>
               </Border>
             </Property>
-            <Property name="label" type="java.lang.String" value="Events"/>
+            <Property name="label" type="java.lang.String" value="News"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
